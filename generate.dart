@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -36,12 +37,17 @@ Future<void> _setHeaders(HttpClientRequest request, bool force) async {
 Future<void> _processMarkdownResponse(HttpClientResponse response) async {
   if (response.statusCode == 200) {
     logger.info('Got new markdown successfully, generating new model');
-    final context = _ParserContext();
+    final context = ParserContext();
     await for (final line in response.lines()) {
-      await context.receiveLine(line.trimRight());
+      context.receiveLine(line.trimRight());
     }
-    await File('lib/src/model.g.dart')
-        .writeAsString(context.toString(), flush: true);
+    final fileHandle =
+        await File('lib/src/model.g.dart').open(mode: FileMode.writeOnly);
+    try {
+      await context.write(fileHandle.writeString);
+    } finally {
+      await fileHandle.close();
+    }
     final etag = response.headers.value('Etag');
     if (etag != null) {
       await _storeEtag(etag);
@@ -72,13 +78,13 @@ Future<void> _storeEtag(String etag) async {
   await etagFile.writeAsString(etag, flush: true);
 }
 
-class _ParserContext {
+class ParserContext {
   var _isInCodeBrackets = false;
   var _isWaitingForCode = false;
   final _definition = <String>[];
   final _classes = <_Class>[];
 
-  Future<void> receiveLine(String line) async {
+  void receiveLine(String line) {
     if (_isInCodeBrackets) {
       _receiveCode(line);
     } else if (_isWaitingForCode) {
@@ -102,9 +108,13 @@ class _ParserContext {
     }
   }
 
-  @override
-  String toString() {
-    return _classes.map((cls) => cls.contents.join('\n')).join('\n\n');
+  Future<void> write(FutureOr<void> Function(String) writer) async {
+    await writer("import 'dart:convert' show json;\n\n");
+    for (final cls in _classes) {
+      await writer(cls.contents.join('\n'));
+      await writer('\n\n');
+    }
+    await _writeJsonParser(_classes, writer);
   }
 }
 
@@ -147,10 +157,17 @@ void _parseClassDefinition(Iterator<String> iter, _Class cls) {
         ..extendsClass = parts[3];
     } else if (parts.length == 2 && parts[0] == 'class') {
       cls.name = parts[1];
+      // TODO remove this once ticket is fixed:
+      // https://github.com/dart-lang/test/issues/1536
+      if (cls.name == 'AllSuitesEvent') {
+        cls.extendsClass = 'Event';
+      }
     } else {
       throw Exception('Expected class definition, got line: "${iter.current}"');
     }
-    cls.contents.add(iter.current);
+    cls.contents.add('${cls.isAbstract ? 'abstract ' : ''}'
+        'class ${cls.name} '
+        '${cls.extendsClass == null ? '' : 'extends ${cls.extendsClass} '}{');
     return;
   }
   throw Exception('Ran out of lines before finding the class definition');
@@ -238,6 +255,35 @@ void _addConstructor(_Class cls) {
   cls.contents.add('\n  ${cls.name}({$constructorFields});');
 }
 
+Future<void> _writeJsonParser(
+    List<_Class> classes, FutureOr<void> Function(String) writer) async {
+  await writer(r'''
+Event parseJsonToEvent(String text) {
+  final map = json.decode(text);
+  switch(map['type']) {
+''');
+  for (var cls in classes.where((cls) => !cls.isAbstract)) {
+    final typeField = cls.fields.firstWhere((f) => f.name == 'type',
+        orElse: () => const _Field.empty());
+    final fieldType = typeField.value;
+    if (fieldType != null) {
+      final fields = cls.fields
+          .where((f) => f.value == null)
+          .map((f) => "${f.name}: map['${f.name}']")
+          .join(', ');
+      await writer('    case $fieldType:\n      return ${cls.name}(');
+      await writer(fields);
+      await writer(');\n');
+    }
+  }
+  await writer(r'''
+    default:
+      throw Exception('Unknown Event type: $map');
+  }
+}
+''');
+}
+
 class _Class {
   bool isAbstract = false;
   String name = '';
@@ -247,15 +293,21 @@ class _Class {
 }
 
 class _Field {
-  bool fromParentClass = false;
+  final bool fromParentClass;
   final String name;
   final String type;
   final String? value;
 
-  _Field(this.name, this.type, [this.value]);
+  const _Field(this.name, this.type,
+      [this.value, this.fromParentClass = false]);
 
-  _Field copyToChildClass() =>
-      _Field(name, type, value)..fromParentClass = true;
+  const _Field.empty()
+      : fromParentClass = false,
+        name = '',
+        type = '',
+        value = null;
+
+  _Field copyToChildClass() => _Field(name, type, value, true);
 }
 
 extension Lines on HttpClientResponse {

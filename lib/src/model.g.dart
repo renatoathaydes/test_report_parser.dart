@@ -1,3 +1,5 @@
+import 'dart:convert' show json;
+
 abstract class Event {
   /// The type of the event.
   ///
@@ -34,13 +36,17 @@ class StartEvent extends Event {
       required this.time});
 }
 
-class AllSuitesEvent {
+class AllSuitesEvent extends Event {
+  @override
   final String type = "allSuites";
 
   /// The total number of suites that will be loaded.
   final int count;
 
-  AllSuitesEvent({required this.count});
+  @override
+  final int time;
+
+  AllSuitesEvent({required this.count, required this.time});
 }
 
 class SuiteEvent extends Event {
@@ -312,4 +318,54 @@ class Metadata {
   final String? skipReason;
 
   Metadata({required this.skip, this.skipReason});
+}
+
+Event parseJsonToEvent(String text) {
+  final map = json.decode(text);
+  switch (map['type']) {
+    case "start":
+      return StartEvent(
+          protocolVersion: map['protocolVersion'],
+          runnerVersion: map['runnerVersion'],
+          pid: map['pid'],
+          time: map['time']);
+    case "allSuites":
+      return AllSuitesEvent(count: map['count'], time: map['time']);
+    case "suite":
+      return SuiteEvent(suite: map['suite'], time: map['time']);
+    case "debug":
+      return DebugEvent(
+          suiteID: map['suiteID'],
+          observatory: map['observatory'],
+          remoteDebugger: map['remoteDebugger'],
+          time: map['time']);
+    case "group":
+      return GroupEvent(group: map['group'], time: map['time']);
+    case "testStart":
+      return TestStartEvent(test: map['test'], time: map['time']);
+    case "print":
+      return MessageEvent(
+          testID: map['testID'],
+          messageType: map['messageType'],
+          message: map['message'],
+          time: map['time']);
+    case "error":
+      return ErrorEvent(
+          testID: map['testID'],
+          error: map['error'],
+          stackTrace: map['stackTrace'],
+          isFailure: map['isFailure'],
+          time: map['time']);
+    case "testDone":
+      return TestDoneEvent(
+          testID: map['testID'],
+          result: map['result'],
+          hidden: map['hidden'],
+          skipped: map['skipped'],
+          time: map['time']);
+    case "done":
+      return DoneEvent(success: map['success'], time: map['time']);
+    default:
+      throw Exception('Unknown Event type: $map');
+  }
 }
