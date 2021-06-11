@@ -10,21 +10,25 @@ final etagFile = File('.dartle_tool/etag.txt');
 
 final log.Logger logger = log.Logger('generate.dart');
 
-Future<void> generateModel() async {
+Future<void> generateModel({required bool force}) async {
   final client = HttpClient();
   try {
     final request = await client.getUrl(Uri.parse(docUrl));
-    await _setHeaders(request);
+    await _setHeaders(request, force);
     await _processMarkdownResponse(await request.close());
   } finally {
     client.close();
   }
 }
 
-Future<void> _setHeaders(HttpClientRequest request) async {
-  final etag = await _loadEtag();
-  if (etag != null) {
-    request.headers.add('If-None-Match', etag);
+Future<void> _setHeaders(HttpClientRequest request, bool force) async {
+  if (force) {
+    logger.info('Forcing re-generation of model');
+  } else {
+    final etag = await _loadEtag();
+    if (etag != null) {
+      request.headers.add('If-None-Match', etag);
+    }
   }
   request.headers.add('Accept', 'text/plain');
 }
