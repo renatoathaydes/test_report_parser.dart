@@ -132,16 +132,28 @@ DartField _parseField(String current, DartClass cls, List<DartClass> classes) {
   if (parentFields.contains(parts[1])) {
     cls.contents.add('  @override');
   }
+  String type, name;
+  String? value;
   if (parts.length == 2) {
-    cls.contents.add('  ${cls.isAbstract ? 'abstract ' : ''}final $line');
-    return DartField(parts[1], parts[0]);
+    type = parts[0];
+    name = parts[1];
+  } else if (parts.length == 4 && parts[2] == '=') {
+    type = parts[0];
+    name = parts[1];
+    value = _strAsSingleQuote(parts[3]);
+  } else {
+    throw Exception('Expected field definition, got line: "$current"');
   }
-  if (parts.length == 4 && parts[2] == '=') {
-    final value = _strAsSingleQuote(parts[3]);
-    cls.contents.add('  final ${parts[0]} ${parts[1]} = $value;');
-    return DartField(parts[1], parts[0], value);
+  // TODO remove when issue is fixed:
+  // https://github.com/dart-lang/test/issues/1537
+  if (const {'line', 'column', 'url', 'root_line', 'root_column', 'root_url'}
+          .contains(name) &&
+      !type.endsWith('?')) {
+    type = '$type?';
   }
-  throw Exception('Expected field definition, got line: "$current"');
+  cls.contents.add(
+      '  ${cls.isAbstract ? 'abstract ' : ''}final $type $name${value == null ? '' : ' = $value'};');
+  return DartField(name, type, value);
 }
 
 String _strAsSingleQuote(String part) {

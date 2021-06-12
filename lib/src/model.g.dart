@@ -415,30 +415,30 @@ class Test {
   final List<int> groupIDs;
 
   /// The (1-based) line on which the test was defined, or `null`.
-  final int line;
+  final int? line;
 
   /// The (1-based) column on which the test was defined, or `null`.
-  final int column;
+  final int? column;
 
   /// The URL for the file in which the test was defined, or `null`.
-  final String url;
+  final String? url;
 
   /// The (1-based) line in the original test suite from which the test
   /// originated.
   ///
   /// Will only be present if `root_url` is different from `url`.
-  final int root_line;
+  final int? root_line;
 
   /// The (1-based) line on in the original test suite from which the test
   /// originated.
   ///
   /// Will only be present if `root_url` is different from `url`.
-  final int root_column;
+  final int? root_column;
 
   /// The URL for the original test suite in which the test was defined.
   ///
   /// Will only be present if different from `url`.
-  final String root_url;
+  final String? root_url;
 
   /// This field is deprecated and should not be used.
   final Metadata metadata;
@@ -448,12 +448,12 @@ class Test {
       required this.name,
       required this.suiteID,
       required this.groupIDs,
-      required this.line,
-      required this.column,
-      required this.url,
-      required this.root_line,
-      required this.root_column,
-      required this.root_url,
+      this.line,
+      this.column,
+      this.url,
+      this.root_line,
+      this.root_column,
+      this.root_url,
       required this.metadata});
 
   @override
@@ -479,12 +479,12 @@ class Test {
       name.hashCode ^
       suiteID.hashCode ^
       groupIDs.hashCode ^
-      line.hashCode ^
-      column.hashCode ^
-      url.hashCode ^
-      root_line.hashCode ^
-      root_column.hashCode ^
-      root_url.hashCode ^
+      (line?.hashCode ?? 0) ^
+      (column?.hashCode ?? 0) ^
+      (url?.hashCode ?? 0) ^
+      (root_line?.hashCode ?? 0) ^
+      (root_column?.hashCode ?? 0) ^
+      (root_url?.hashCode ?? 0) ^
       metadata.hashCode;
 
   @override
@@ -537,13 +537,13 @@ class Group {
   final int testCount;
 
   /// The (1-based) line on which the group was defined, or `null`.
-  final int line;
+  final int? line;
 
   /// The (1-based) column on which the group was defined, or `null`.
-  final int column;
+  final int? column;
 
   /// The URL for the file in which the group was defined, or `null`.
-  final String url;
+  final String? url;
 
   /// This field is deprecated and should not be used.
   final Metadata metadata;
@@ -554,9 +554,9 @@ class Group {
       required this.suiteID,
       this.parentID,
       required this.testCount,
-      required this.line,
-      required this.column,
-      required this.url,
+      this.line,
+      this.column,
+      this.url,
       required this.metadata});
 
   @override
@@ -581,9 +581,9 @@ class Group {
       suiteID.hashCode ^
       (parentID?.hashCode ?? 0) ^
       testCount.hashCode ^
-      line.hashCode ^
-      column.hashCode ^
-      url.hashCode ^
+      (line?.hashCode ?? 0) ^
+      (column?.hashCode ?? 0) ^
+      (url?.hashCode ?? 0) ^
       metadata.hashCode;
 
   @override
