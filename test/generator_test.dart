@@ -98,8 +98,3 @@ void main() {
     expect(result.toString(), equals(_sampleMarkdownParsed));
   });
 }
-//abstract class Event {
-//   /// The type of the event.
-//   ///
-//   /// This is always one of the subclass types listed below.
-//   abstrac
