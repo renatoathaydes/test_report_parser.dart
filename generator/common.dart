@@ -25,5 +25,17 @@ class DartField {
         type = '',
         value = null;
 
+  bool get isOptional => type.endsWith('?');
+
+  bool get isGeneric => type.contains('<');
+
+  String get genericType {
+    var startIndex = type.indexOf('<');
+    if (startIndex <= 0) {
+      throw Exception('Type is not generic: $type');
+    }
+    return type.substring(startIndex + 1, type.length - 1);
+  }
+
   DartField copyToChildClass() => DartField(name, type, value, true);
 }

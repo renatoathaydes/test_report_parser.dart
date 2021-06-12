@@ -23,6 +23,7 @@ class ParserContext {
   void _receiveCode(String line) {
     if (line == '```') {
       _isInCodeBrackets = false;
+      _isWaitingForCode = false;
       classes.add(_parseClass(_definition, classes));
       _definition.clear();
     } else {
@@ -136,8 +137,16 @@ DartField _parseField(String current, DartClass cls, List<DartClass> classes) {
     return DartField(parts[1], parts[0]);
   }
   if (parts.length == 4 && parts[2] == '=') {
-    cls.contents.add('  final $line');
-    return DartField(parts[1], parts[0], parts[3]);
+    final value = _strAsSingleQuote(parts[3]);
+    cls.contents.add('  final ${parts[0]} ${parts[1]} = $value;');
+    return DartField(parts[1], parts[0], value);
   }
   throw Exception('Expected field definition, got line: "$current"');
+}
+
+String _strAsSingleQuote(String part) {
+  if (part.startsWith('"') && part.endsWith('"')) {
+    return "'${part.substring(1, part.length - 1)}'";
+  }
+  return part;
 }
