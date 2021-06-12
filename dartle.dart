@@ -1,7 +1,7 @@
 import 'package:dartle/dartle_dart.dart';
 import 'package:path/path.dart' show join;
 
-import 'generate.dart';
+import 'generator/generate.dart';
 
 final dartleDart = DartleDart();
 

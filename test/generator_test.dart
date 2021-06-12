@@ -1,7 +1,8 @@
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
-import '../generate.dart';
+import '../generator/generate.dart';
+import '../generator/parser.dart';
 
 const _sampleMarkdown = r'''
 # Exmample
@@ -108,7 +109,7 @@ void main() {
     final context = ParserContext();
     _sampleMarkdown.split('\n').forEach(context.receiveLine);
     final result = StringBuffer();
-    await context.write(result.write);
+    await generate(context.classes, result.write);
     expect(result.toString(), equals(_sampleMarkdownParsed));
   });
 }
