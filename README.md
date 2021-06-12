@@ -15,12 +15,19 @@ page, which documents the Dart Test JSON reporter output.
 Basically, call the function `parseJsonToEvent(String)` for each line of output from the JSON Test Reporter:
 
 ```dart
-final event = parseJsonToEvent(line);
-print(event);
+import 'package:test_report_parser/test_report_parser.dart';
 
-// check specific events
-if (event is TestStartEvent) {
-  print('=== Test "${event.test.name}" has started. ===');
+void main() {
+  final event = parseJsonToEvent('{"success":true,"type":"done","time":36361}');
+  print(event);
+
+  if (event is DoneEvent) {
+    if (event.success) {
+      print('!!!!!! Tests were successful !!!!!!');
+    } else {
+      print('XXXXXX There were failures. XXXXXX');
+    }
+  }
 }
 ```
 
