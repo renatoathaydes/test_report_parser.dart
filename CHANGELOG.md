@@ -1,3 +1,4 @@
 ## 1.0.0
 
-- TBD
+- Initial version.
+  Can parse test reports as of Dart Test version 1.17.6.
