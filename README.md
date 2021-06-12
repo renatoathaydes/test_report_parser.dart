@@ -12,7 +12,21 @@ page, which documents the Dart Test JSON reporter output.
 
 ## Using test_report_parser
 
+Basically, call the function `parseJsonToEvent(String)` for each line of output from the JSON Test Reporter:
 
+```dart
+final event = parseJsonToEvent(line);
+print(event);
+
+// check specific events
+if (event is TestStartEvent) {
+  print('=== Test "${event.test.name}" has started. ===');
+}
+```
+
+Check [test_report_parser_example.dart](example/test_report_parser_example.dart) for a full example.
+
+See also the generated [Dart Model](lib/src/model.g.dart).
 
 ## Building
 
