@@ -1,7 +1,7 @@
 # test_report_parser
 
 [![Dartle CI](https://github.com/renatoathaydes/test_report_parser.dart/workflows/Dartle%20CI/badge.svg)](https://github.com/renatoathaydes/test_report_parser.dart/actions)
-[![pub package](https://img.shields.io/pub/v/test_report_parser.dart.svg)](https://pub.dev/packages/test_report_parser.dart)
+[![pub package](https://img.shields.io/pub/v/test_report_parser.svg)](https://pub.dev/packages/test_report_parser)
 
 This library contains an auto-generated Dart Model representing the events emitted by the Dart Tests JSON reporter.
 
