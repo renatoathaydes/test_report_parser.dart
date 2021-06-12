@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:test_report_parser/test_report_parser.dart';
 
 const logExample = r'''
@@ -11,16 +9,20 @@ const logExample = r'''
 ''';
 
 void main() {
-  for (final lines in logExample.split('\n').where((l) => l.isNotEmpty)) {
-    final map = json.decode(lines);
-    switch (map['type']) {
-      case 'start':
-        print(StartEvent(
-          protocolVersion: map['protocolVersion'],
-          runnerVersion: map['runnerVersion'],
-          pid: map['pid'],
-          time: map['time'],
-        ));
+  for (final line in logExample.split('\n').where((l) => l.isNotEmpty)) {
+    final event = parseJsonToEvent(line);
+    print(event);
+
+    // check specific events
+    if (event is TestStartEvent) {
+      print('=== Test "${event.test.name}" has started. ===');
+    }
+    if (event is DoneEvent) {
+      if (event.success) {
+        print('!!!!!! Tests were successful !!!!!!');
+      } else {
+        print('XXXXXX There were failures. XXXXXX');
+      }
     }
   }
 }
