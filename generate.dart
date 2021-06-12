@@ -131,6 +131,9 @@ _Class _parseClass(List<String> definition, List<_Class> classes) {
   }
   _addParentFields(cls, classes);
   _addConstructor(cls);
+  _addEquals(cls);
+  _addHashCode(cls);
+  _addToString(cls);
   cls.contents.add('}');
   return cls;
 }
@@ -253,6 +256,30 @@ void _addConstructor(_Class cls) {
       .map((f) => '${f.type.endsWith('?') ? '' : 'required '}this.${f.name}')
       .join(', ');
   cls.contents.add('\n  ${cls.name}({$constructorFields});');
+}
+
+void _addEquals(_Class cls) {
+  if (cls.isAbstract) return;
+  final fieldParts =
+      cls.fields.map((f) => '${f.name} == other.${f.name}').join(' && ');
+  cls.contents.add('\n  @override\n  bool operator ==(Object other) =>\n'
+      '    identical(this, other) ||\n'
+      '    other is ${cls.name} && runtimeType == other.runtimeType'
+      '${fieldParts.isEmpty ? '' : ' &&\n    $fieldParts'};');
+}
+
+void _addHashCode(_Class cls) {
+  if (cls.isAbstract) return;
+  final fieldParts = cls.fields.map((f) => '${f.name}.hashCode').join(' ^ ');
+  cls.contents.add('\n  @override\n  int get hashCode =>\n'
+      '    ${fieldParts.isEmpty ? '37' : fieldParts};');
+}
+
+void _addToString(_Class cls) {
+  if (cls.isAbstract) return;
+  final fieldParts = cls.fields.map((f) => '${f.name}: \$${f.name}').join(', ');
+  cls.contents.add('\n  @override\n  String toString() =>\n'
+      '    "${cls.name}{$fieldParts}";');
 }
 
 Future<void> _writeJsonParser(

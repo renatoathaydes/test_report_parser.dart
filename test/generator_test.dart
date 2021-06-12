@@ -76,6 +76,20 @@ class StartEvent extends Event {
   final int time;
 
   StartEvent({required this.protocolVersion, required this.runnerVersion, this.pid, required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is StartEvent && runtimeType == other.runtimeType &&
+    type == other.type && protocolVersion == other.protocolVersion && runnerVersion == other.runnerVersion && pid == other.pid && time == other.time;
+
+  @override
+  int get hashCode =>
+    type.hashCode ^ protocolVersion.hashCode ^ runnerVersion.hashCode ^ pid.hashCode ^ time.hashCode;
+
+  @override
+  String toString() =>
+    "StartEvent{type: $type, protocolVersion: $protocolVersion, runnerVersion: $runnerVersion, pid: $pid, time: $time}";
 }
 
 Event parseJsonToEvent(String text) {

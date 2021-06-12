@@ -34,6 +34,29 @@ class StartEvent extends Event {
       required this.runnerVersion,
       required this.pid,
       required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StartEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          protocolVersion == other.protocolVersion &&
+          runnerVersion == other.runnerVersion &&
+          pid == other.pid &&
+          time == other.time;
+
+  @override
+  int get hashCode =>
+      type.hashCode ^
+      protocolVersion.hashCode ^
+      runnerVersion.hashCode ^
+      pid.hashCode ^
+      time.hashCode;
+
+  @override
+  String toString() =>
+      "StartEvent{type: $type, protocolVersion: $protocolVersion, runnerVersion: $runnerVersion, pid: $pid, time: $time}";
 }
 
 class AllSuitesEvent extends Event {
@@ -47,6 +70,22 @@ class AllSuitesEvent extends Event {
   final int time;
 
   AllSuitesEvent({required this.count, required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AllSuitesEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          count == other.count &&
+          time == other.time;
+
+  @override
+  int get hashCode => type.hashCode ^ count.hashCode ^ time.hashCode;
+
+  @override
+  String toString() =>
+      "AllSuitesEvent{type: $type, count: $count, time: $time}";
 }
 
 class SuiteEvent extends Event {
@@ -60,6 +99,21 @@ class SuiteEvent extends Event {
   final int time;
 
   SuiteEvent({required this.suite, required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SuiteEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          suite == other.suite &&
+          time == other.time;
+
+  @override
+  int get hashCode => type.hashCode ^ suite.hashCode ^ time.hashCode;
+
+  @override
+  String toString() => "SuiteEvent{type: $type, suite: $suite, time: $time}";
 }
 
 class DebugEvent extends Event {
@@ -85,6 +139,29 @@ class DebugEvent extends Event {
       required this.observatory,
       required this.remoteDebugger,
       required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DebugEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          suiteID == other.suiteID &&
+          observatory == other.observatory &&
+          remoteDebugger == other.remoteDebugger &&
+          time == other.time;
+
+  @override
+  int get hashCode =>
+      type.hashCode ^
+      suiteID.hashCode ^
+      observatory.hashCode ^
+      remoteDebugger.hashCode ^
+      time.hashCode;
+
+  @override
+  String toString() =>
+      "DebugEvent{type: $type, suiteID: $suiteID, observatory: $observatory, remoteDebugger: $remoteDebugger, time: $time}";
 }
 
 class GroupEvent extends Event {
@@ -98,6 +175,21 @@ class GroupEvent extends Event {
   final int time;
 
   GroupEvent({required this.group, required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GroupEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          group == other.group &&
+          time == other.time;
+
+  @override
+  int get hashCode => type.hashCode ^ group.hashCode ^ time.hashCode;
+
+  @override
+  String toString() => "GroupEvent{type: $type, group: $group, time: $time}";
 }
 
 class TestStartEvent extends Event {
@@ -111,6 +203,21 @@ class TestStartEvent extends Event {
   final int time;
 
   TestStartEvent({required this.test, required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TestStartEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          test == other.test &&
+          time == other.time;
+
+  @override
+  int get hashCode => type.hashCode ^ test.hashCode ^ time.hashCode;
+
+  @override
+  String toString() => "TestStartEvent{type: $type, test: $test, time: $time}";
 }
 
 class MessageEvent extends Event {
@@ -134,6 +241,29 @@ class MessageEvent extends Event {
       required this.messageType,
       required this.message,
       required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MessageEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          testID == other.testID &&
+          messageType == other.messageType &&
+          message == other.message &&
+          time == other.time;
+
+  @override
+  int get hashCode =>
+      type.hashCode ^
+      testID.hashCode ^
+      messageType.hashCode ^
+      message.hashCode ^
+      time.hashCode;
+
+  @override
+  String toString() =>
+      "MessageEvent{type: $type, testID: $testID, messageType: $messageType, message: $message, time: $time}";
 }
 
 class ErrorEvent extends Event {
@@ -161,6 +291,31 @@ class ErrorEvent extends Event {
       required this.stackTrace,
       required this.isFailure,
       required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ErrorEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          testID == other.testID &&
+          error == other.error &&
+          stackTrace == other.stackTrace &&
+          isFailure == other.isFailure &&
+          time == other.time;
+
+  @override
+  int get hashCode =>
+      type.hashCode ^
+      testID.hashCode ^
+      error.hashCode ^
+      stackTrace.hashCode ^
+      isFailure.hashCode ^
+      time.hashCode;
+
+  @override
+  String toString() =>
+      "ErrorEvent{type: $type, testID: $testID, error: $error, stackTrace: $stackTrace, isFailure: $isFailure, time: $time}";
 }
 
 class TestDoneEvent extends Event {
@@ -188,6 +343,31 @@ class TestDoneEvent extends Event {
       required this.hidden,
       required this.skipped,
       required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TestDoneEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          testID == other.testID &&
+          result == other.result &&
+          hidden == other.hidden &&
+          skipped == other.skipped &&
+          time == other.time;
+
+  @override
+  int get hashCode =>
+      type.hashCode ^
+      testID.hashCode ^
+      result.hashCode ^
+      hidden.hashCode ^
+      skipped.hashCode ^
+      time.hashCode;
+
+  @override
+  String toString() =>
+      "TestDoneEvent{type: $type, testID: $testID, result: $result, hidden: $hidden, skipped: $skipped, time: $time}";
 }
 
 class DoneEvent extends Event {
@@ -201,6 +381,21 @@ class DoneEvent extends Event {
   final int time;
 
   DoneEvent({required this.success, required this.time});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DoneEvent &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          success == other.success &&
+          time == other.time;
+
+  @override
+  int get hashCode => type.hashCode ^ success.hashCode ^ time.hashCode;
+
+  @override
+  String toString() => "DoneEvent{type: $type, success: $success, time: $time}";
 }
 
 class Test {
@@ -258,6 +453,41 @@ class Test {
       required this.root_column,
       required this.root_url,
       required this.metadata});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Test &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          suiteID == other.suiteID &&
+          groupIDs == other.groupIDs &&
+          line == other.line &&
+          column == other.column &&
+          url == other.url &&
+          root_line == other.root_line &&
+          root_column == other.root_column &&
+          root_url == other.root_url &&
+          metadata == other.metadata;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      suiteID.hashCode ^
+      groupIDs.hashCode ^
+      line.hashCode ^
+      column.hashCode ^
+      url.hashCode ^
+      root_line.hashCode ^
+      root_column.hashCode ^
+      root_url.hashCode ^
+      metadata.hashCode;
+
+  @override
+  String toString() =>
+      "Test{id: $id, name: $name, suiteID: $suiteID, groupIDs: $groupIDs, line: $line, column: $column, url: $url, root_line: $root_line, root_column: $root_column, root_url: $root_url, metadata: $metadata}";
 }
 
 class Suite {
@@ -271,6 +501,21 @@ class Suite {
   final String path;
 
   Suite({required this.id, this.platform, required this.path});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Suite &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          platform == other.platform &&
+          path == other.path;
+
+  @override
+  int get hashCode => id.hashCode ^ platform.hashCode ^ path.hashCode;
+
+  @override
+  String toString() => "Suite{id: $id, platform: $platform, path: $path}";
 }
 
 class Group {
@@ -311,6 +556,37 @@ class Group {
       required this.column,
       required this.url,
       required this.metadata});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Group &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          suiteID == other.suiteID &&
+          parentID == other.parentID &&
+          testCount == other.testCount &&
+          line == other.line &&
+          column == other.column &&
+          url == other.url &&
+          metadata == other.metadata;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      suiteID.hashCode ^
+      parentID.hashCode ^
+      testCount.hashCode ^
+      line.hashCode ^
+      column.hashCode ^
+      url.hashCode ^
+      metadata.hashCode;
+
+  @override
+  String toString() =>
+      "Group{id: $id, name: $name, suiteID: $suiteID, parentID: $parentID, testCount: $testCount, line: $line, column: $column, url: $url, metadata: $metadata}";
 }
 
 class Metadata {
@@ -318,6 +594,20 @@ class Metadata {
   final String? skipReason;
 
   Metadata({required this.skip, this.skipReason});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Metadata &&
+          runtimeType == other.runtimeType &&
+          skip == other.skip &&
+          skipReason == other.skipReason;
+
+  @override
+  int get hashCode => skip.hashCode ^ skipReason.hashCode;
+
+  @override
+  String toString() => "Metadata{skip: $skip, skipReason: $skipReason}";
 }
 
 Event parseJsonToEvent(String text) {
