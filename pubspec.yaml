@@ -1,7 +1,7 @@
 name: test_report_parser
 description: This library contains an auto-generated Dart Model representing the events emitted by the Dart Tests JSON reporter.
 version: 1.0.0
-# homepage: https://www.example.com
+homepage: https://github.com/renatoathaydes/test_report_parser.dart/
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
