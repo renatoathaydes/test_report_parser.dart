@@ -16,7 +16,7 @@ Add `test_report_parser` to your pubspec dependencies:
 
 ```yaml
 dependencies:
-  test_report_parser: ^1.0.0
+  test_report_parser: ^1.1.0
 ```
 
 Basically, call the function `parseJsonToEvent(String)` for each line of output from the JSON Test Reporter:
