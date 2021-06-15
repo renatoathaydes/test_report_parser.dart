@@ -18,7 +18,10 @@ void main() {
       print('=== Test "${event.test.name}" has started. ===');
     }
     if (event is DoneEvent) {
-      if (event.success) {
+      final ok = event.success;
+      if (ok == null) {
+        print('Tests did not terminate correctly');
+      } else if (ok) {
         print('!!!!!! Tests were successful !!!!!!');
       } else {
         print('XXXXXX There were failures. XXXXXX');

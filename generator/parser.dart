@@ -68,11 +68,6 @@ void _parseClassDefinition(Iterator<String> iter, DartClass cls) {
         ..extendsClass = parts[3];
     } else if (parts.length == 2 && parts[0] == 'class') {
       cls.name = parts[1];
-      // TODO remove this once ticket is fixed:
-      // https://github.com/dart-lang/test/issues/1536
-      if (cls.name == 'AllSuitesEvent') {
-        cls.extendsClass = 'Event';
-      }
     } else {
       throw Exception('Expected class definition, got line: "${iter.current}"');
     }
@@ -143,13 +138,6 @@ DartField _parseField(String current, DartClass cls, List<DartClass> classes) {
     value = _strAsSingleQuote(parts[3]);
   } else {
     throw Exception('Expected field definition, got line: "$current"');
-  }
-  // TODO remove when issue is fixed:
-  // https://github.com/dart-lang/test/issues/1537
-  if (const {'line', 'column', 'url', 'root_line', 'root_column', 'root_url'}
-          .contains(name) &&
-      !type.endsWith('?')) {
-    type = '$type?';
   }
   cls.contents.add(
       '  ${cls.isAbstract ? 'abstract ' : ''}final $type $name${value == null ? '' : ' = $value'};');

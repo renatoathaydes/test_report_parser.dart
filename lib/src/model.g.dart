@@ -23,7 +23,9 @@ class StartEvent extends Event {
   final String protocolVersion;
 
   /// The version of the test runner being used.
-  final String runnerVersion;
+  ///
+  /// This is null if for some reason the version couldn't be loaded.
+  final String? runnerVersion;
 
   /// The pid of the VM process running the tests.
   final int pid;
@@ -33,7 +35,7 @@ class StartEvent extends Event {
 
   StartEvent(
       {required this.protocolVersion,
-      required this.runnerVersion,
+      this.runnerVersion,
       required this.pid,
       required this.time});
 
@@ -52,7 +54,7 @@ class StartEvent extends Event {
   int get hashCode =>
       type.hashCode ^
       protocolVersion.hashCode ^
-      runnerVersion.hashCode ^
+      (runnerVersion?.hashCode ?? 0) ^
       pid.hashCode ^
       time.hashCode;
 
@@ -127,19 +129,19 @@ class DebugEvent extends Event {
 
   /// The HTTP URL for the Dart Observatory, or `null` if the Observatory isn't
   /// available for this suite.
-  final String observatory;
+  final String? observatory;
 
   /// The HTTP URL for the remote debugger for this suite's host page, or `null`
   /// if no remote debugger is available for this suite.
-  final String remoteDebugger;
+  final String? remoteDebugger;
 
   @override
   final int time;
 
   DebugEvent(
       {required this.suiteID,
-      required this.observatory,
-      required this.remoteDebugger,
+      this.observatory,
+      this.remoteDebugger,
       required this.time});
 
   @override
@@ -157,8 +159,8 @@ class DebugEvent extends Event {
   int get hashCode =>
       type.hashCode ^
       suiteID.hashCode ^
-      observatory.hashCode ^
-      remoteDebugger.hashCode ^
+      (observatory?.hashCode ?? 0) ^
+      (remoteDebugger?.hashCode ?? 0) ^
       time.hashCode;
 
   @override
@@ -377,12 +379,15 @@ class DoneEvent extends Event {
   final String type = 'done';
 
   /// Whether all tests succeeded (or were skipped).
-  final bool success;
+  ///
+  /// Will be `null` if the test runner was close before all tests completed
+  /// running.
+  final bool? success;
 
   @override
   final int time;
 
-  DoneEvent({required this.success, required this.time});
+  DoneEvent({this.success, required this.time});
 
   @override
   bool operator ==(Object other) =>
@@ -394,7 +399,7 @@ class DoneEvent extends Event {
           time == other.time;
 
   @override
-  int get hashCode => type.hashCode ^ success.hashCode ^ time.hashCode;
+  int get hashCode => type.hashCode ^ (success?.hashCode ?? 0) ^ time.hashCode;
 
   @override
   String toString() => 'DoneEvent{type: $type, success: $success, time: $time}';
@@ -497,12 +502,12 @@ class Suite {
   final int id;
 
   /// The platform on which the suite is running.
-  final String? platform;
+  final String platform;
 
-  /// The path to the suite's file.
-  final String path;
+  /// The path to the suite's file, or `null` if that path is unknown.
+  final String? path;
 
-  Suite({required this.id, this.platform, required this.path});
+  Suite({required this.id, required this.platform, this.path});
 
   @override
   bool operator ==(Object other) =>
@@ -514,7 +519,7 @@ class Suite {
           path == other.path;
 
   @override
-  int get hashCode => id.hashCode ^ (platform?.hashCode ?? 0) ^ path.hashCode;
+  int get hashCode => id.hashCode ^ platform.hashCode ^ (path?.hashCode ?? 0);
 
   @override
   String toString() => 'Suite{id: $id, platform: $platform, path: $path}';
@@ -525,7 +530,7 @@ class Group {
   final int id;
 
   /// The name of the group, including prefixes from any containing groups.
-  final String? name;
+  final String name;
 
   /// The ID of the suite containing this group.
   final int suiteID;
@@ -550,7 +555,7 @@ class Group {
 
   Group(
       {required this.id,
-      this.name,
+      required this.name,
       required this.suiteID,
       this.parentID,
       required this.testCount,
@@ -577,7 +582,7 @@ class Group {
   @override
   int get hashCode =>
       id.hashCode ^
-      (name?.hashCode ?? 0) ^
+      name.hashCode ^
       suiteID.hashCode ^
       (parentID?.hashCode ?? 0) ^
       testCount.hashCode ^
@@ -593,6 +598,8 @@ class Group {
 
 class Metadata {
   final bool skip;
+
+  /// The reason the tests was skipped, or `null` if it wasn't skipped.
   final String? skipReason;
 
   Metadata({required this.skip, this.skipReason});
