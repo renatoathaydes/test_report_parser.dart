@@ -16,7 +16,7 @@ Add `test_report_parser` to your pubspec dependencies:
 
 ```yaml
 dependencies:
-  test_report_parser: ^1.1.0
+  test_report_parser:
 ```
 
 Basically, call the function `parseJsonToEvent(String)` for each line of output from the JSON Test Reporter:
@@ -46,18 +46,13 @@ See also the generated [Dart Model](lib/src/model.g.dart).
 
 This project relies on [Dartle](https://github.com/renatoathaydes/dartle/) to run the build.
 
-If you have `dartle` installed, run `dartle generate` at the project root directory to generate the model locally,
-then run `dartle` to run the complete build.
+If you have `dartle` installed, run `dartle` at the project root directory to generate the model locally and
+execute the tests.
 
-Otherwise, run the build using `dart` as following:
+Otherwise, run the build using standard `dart` tools as following:
 
 ```bash
 dart pub get
 dart dartle.dart generate
-
-# Run a full build using Dartle
-dart dartle.dart
-
-# Run tests only
-dart run test
+dart test
 ```
