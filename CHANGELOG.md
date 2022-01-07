@@ -1,3 +1,7 @@
+## 1.2.0
+
+- Upgraded Dart SDK to 2.15.0 and updated all dependencies.
+
 ## 1.1.0
 
 - Updated model after Dart team updated test docs to fix nullability declarations.
