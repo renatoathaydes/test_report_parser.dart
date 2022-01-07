@@ -13,6 +13,7 @@ void main(List<String> args) {
 
   final generateTask = Task(generateDartSources,
       argsValidator: const ArgsCount.range(min: 0, max: 1),
+      phase: TaskPhase.custom(TaskPhase.setup.index + 1, 'code_generation'),
       description: 'Generates the model of the Dart Test JSON Reporter from'
           ' the Markdown Docs on GitHub');
 
