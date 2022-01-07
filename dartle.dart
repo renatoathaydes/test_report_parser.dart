@@ -9,7 +9,7 @@ final libDirDartFiles =
     dir(join(dartleDart.rootDir, 'lib'), fileFilter: dartFileFilter);
 
 void main(List<String> args) {
-  dartleDart.analyzeCode.dependsOn({'generateDartSources'});
+  dartleDart.formatCode.dependsOn({'generateDartSources'});
 
   final generateTask = Task(generateDartSources,
       argsValidator: const ArgsCount.range(min: 0, max: 1),
