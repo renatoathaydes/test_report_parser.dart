@@ -6,7 +6,7 @@ import 'generator/generate.dart';
 final dartleDart = DartleDart();
 
 final libDirDartFiles =
-    dir(join(dartleDart.rootDir, 'lib'), fileFilter: dartFileFilter);
+    dir(join(dartleDart.rootDir, 'lib'), fileExtensions: const {'.dart'});
 
 void main(List<String> args) {
   dartleDart.formatCode.dependsOn({'generateDartSources'});
