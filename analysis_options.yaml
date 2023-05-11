@@ -1,2 +1,6 @@
 # see https://github.com/dart-lang/lints
 include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - '**.g.dart'
