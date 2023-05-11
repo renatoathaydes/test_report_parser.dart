@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Dependencies updates, removed analysis warnings from .g.dart files.
+
 ## 1.2.0
 
 - Upgraded Dart SDK to 2.15.0 and updated all dependencies.
