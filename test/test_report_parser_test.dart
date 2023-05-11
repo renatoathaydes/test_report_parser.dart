@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as paths;
 import 'package:dartle/dartle.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
@@ -22,9 +23,13 @@ void main() {
 
 void main() {
   test('can parse successful test output', () async {
-    final tempTestFile = File('${Directory.systemTemp.path}/temp_test.dart');
+    final tempTestFile =
+        File(paths.join(Directory.systemTemp.path, 'temp_test.dart'));
     addTearDown(() => ignoreExceptions(tempTestFile.deleteSync));
     await tempTestFile.writeAsString(exampleTest, flush: true);
+
+    // even on Windows, the path is now printed with "/"
+    var testFilePath = tempTestFile.path.replaceAll('\\', '/');
 
     final events = <Event>[];
     final exitCode = await exec(
@@ -45,7 +50,7 @@ void main() {
     });
     emittedEvent<SuiteEvent>(events, (e) {
       expect(e.type, equals('suite'));
-      expect(e.suite.path, equals(tempTestFile.path));
+      expect(e.suite.path, equals(testFilePath));
       expect(e.time, allOf(greaterThanOrEqualTo(0), lessThan(100)));
     });
     emittedEvent<AllSuitesEvent>(events, (e) {
@@ -76,7 +81,7 @@ void main() {
       expect(
           e.map((a) => a.test.name).toList(),
           equals([
-            'loading ${tempTestFile.path}',
+            'loading $testFilePath',
             'basic test 1',
             'First Group group 1 test 1',
             'First Group group 1 test 2',
