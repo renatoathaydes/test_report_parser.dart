@@ -75,8 +75,7 @@ String _generateFieldAssignments(
   if (classInfo == null || classInfo.nonPrimitiveFields.isEmpty) {
     return '';
   }
-  return '\n' +
-      _collectNonPrimitiveFields(infoByClassName, classInfo.cls).join('\n');
+  return '\n${_collectNonPrimitiveFields(infoByClassName, classInfo.cls).join('\n')}';
 }
 
 String _generateFieldParam(
