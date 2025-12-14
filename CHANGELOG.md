@@ -1,3 +1,7 @@
+## 1.2.2
+
+- Dependencies updates, minor fixes to new warnings. 
+
 ## 1.2.1
 
 - Dependencies updates, removed analysis warnings from .g.dart files.
