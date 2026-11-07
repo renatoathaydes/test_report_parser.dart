@@ -88,8 +88,9 @@ String _generateFieldParam(
     return _instantiate(
         infoByClassName, field.type, classInfo.cls.fields, field.name);
   } else {
-    return "$parentName['${field.name}']"
+    final access = "$parentName['${field.name}']"
         "${field.isGeneric ? '.cast<${field.genericType}>()' : ''}";
+    return field.isAddedLater ? '$access ?? ${field.absentValue}' : access;
   }
 }
 

@@ -81,11 +81,15 @@ void _parseClassDefinition(Iterator<String> iter, DartClass cls) {
 
 void _parseFields(
     Iterator<String> iter, DartClass cls, List<DartClass> classes) {
+  var addedLater = false;
   while (iter.moveNext()) {
     final line = iter.current.trim();
     if (line.isEmpty) {
       cls.contents.add('');
       continue;
+    }
+    if (line.startsWith('//') && line.contains('Added in protocol version')) {
+      addedLater = true;
     }
     if (line.startsWith('// ')) {
       cls.contents.add('  /// ${line.substring(3)}');
@@ -106,12 +110,14 @@ void _parseFields(
     if (line == '}') {
       return;
     }
-    cls.fields.add(_parseField(iter.current, cls, classes));
+    cls.fields.add(_parseField(iter.current, cls, classes, addedLater));
+    addedLater = false;
   }
   throw Exception('Ran out of lines while parsing fields of class ${cls.name}');
 }
 
-DartField _parseField(String current, DartClass cls, List<DartClass> classes) {
+DartField _parseField(
+    String current, DartClass cls, List<DartClass> classes, bool addedLater) {
   if (!current.endsWith(';')) {
     throw Exception('Expected field definition, got line: "$current"');
   }
@@ -141,7 +147,7 @@ DartField _parseField(String current, DartClass cls, List<DartClass> classes) {
   }
   cls.contents.add(
       '  ${cls.isAbstract ? 'abstract ' : ''}final $type $name${value == null ? '' : ' = $value'};');
-  return DartField(name, type, value);
+  return DartField(name, type, value, false, addedLater);
 }
 
 String _strAsSingleQuote(String part) {

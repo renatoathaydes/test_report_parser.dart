@@ -97,6 +97,34 @@ void main() {
         parseJsonToEvent('{"success":true,"type":"done","time":36361}');
     expect(event, equals(DoneEvent(success: true, time: 36361)));
   });
+
+  test('can parse testDone events without the retried attribute', () {
+    final event = parseJsonToEvent(
+        '{"testID":1,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":629}');
+    expect(
+        event,
+        equals(TestDoneEvent(
+            testID: 1,
+            result: 'success',
+            hidden: true,
+            skipped: false,
+            retried: false,
+            time: 629)));
+  });
+
+  test('can parse testDone events with the retried attribute', () {
+    final event = parseJsonToEvent(
+        '{"testID":1,"result":"success","skipped":false,"hidden":false,"retried":true,"type":"testDone","time":629}');
+    expect(
+        event,
+        equals(TestDoneEvent(
+            testID: 1,
+            result: 'success',
+            hidden: false,
+            skipped: false,
+            retried: true,
+            time: 629)));
+  });
 }
 
 C Function(A) combine<A, B, C>(B Function(A) first, C Function(B) second) {

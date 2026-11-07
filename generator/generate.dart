@@ -97,7 +97,9 @@ void _addConstructor(DartClass cls) {
   if (cls.isAbstract) return;
   final constructorFields = cls.fields
       .where((f) => f.value == null)
-      .map((f) => '${f.isOptional ? '' : 'required '}this.${f.name}')
+      .map((f) => f.isAddedLater
+          ? 'this.${f.name} = ${f.absentValue}'
+          : '${f.isOptional ? '' : 'required '}this.${f.name}')
       .join(', ');
   cls.contents.add('\n  ${cls.name}({$constructorFields});');
 }

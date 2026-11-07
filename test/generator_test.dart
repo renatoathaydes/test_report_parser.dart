@@ -197,4 +197,44 @@ void main() {
     await generate(context.classes, result.write);
     expect(result.toString(), equals(_sampleMarkdownParsed));
   });
+
+  test('attributes added in a later protocol version default when absent',
+      () async {
+    const markdown = r'''
+### Event
+
+```
+abstract class Event {
+  String type;
+
+  int time;
+}
+```
+
+### TestDoneEvent
+
+```
+class TestDoneEvent extends Event {
+  String type = "testDone";
+
+  // Whether the test passed on retry.
+  //
+  // Added in protocol version 0.1.2.
+  bool retried;
+
+  bool skipped;
+}
+```
+''';
+    final context = ParserContext();
+    markdown.split('\n').forEach(context.receiveLine);
+    final result = StringBuffer();
+    await generate(context.classes, result.write);
+    final output = result.toString();
+    expect(output, contains('  final bool retried;'));
+    expect(output, contains('this.retried = false'));
+    expect(output, contains("retried: map['retried'] ?? false"));
+    expect(output, contains("skipped: map['skipped']"));
+    expect(output, isNot(contains('this.skipped = ')));
+  });
 }

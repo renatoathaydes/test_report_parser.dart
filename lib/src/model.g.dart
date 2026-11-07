@@ -338,6 +338,12 @@ class TestDoneEvent extends Event {
   /// Whether the test (or some part of it) was skipped.
   final bool skipped;
 
+  /// Whether the test was run more than once because it is configured with
+  /// `retry` and an earlier attempt didn't pass.
+  ///
+  /// Added in protocol version 0.1.2.
+  final bool retried;
+
   @override
   final int time;
 
@@ -346,6 +352,7 @@ class TestDoneEvent extends Event {
       required this.result,
       required this.hidden,
       required this.skipped,
+      this.retried = false,
       required this.time});
 
   @override
@@ -358,6 +365,7 @@ class TestDoneEvent extends Event {
           result == other.result &&
           hidden == other.hidden &&
           skipped == other.skipped &&
+          retried == other.retried &&
           time == other.time;
 
   @override
@@ -367,11 +375,12 @@ class TestDoneEvent extends Event {
       result.hashCode ^
       hidden.hashCode ^
       skipped.hashCode ^
+      retried.hashCode ^
       time.hashCode;
 
   @override
   String toString() =>
-      'TestDoneEvent{type: $type, testID: $testID, result: $result, hidden: $hidden, skipped: $skipped, time: $time}';
+      'TestDoneEvent{type: $type, testID: $testID, result: $result, hidden: $hidden, skipped: $skipped, retried: $retried, time: $time}';
 }
 
 class DoneEvent extends Event {
@@ -697,6 +706,7 @@ Event parseJsonToEvent(String text) {
           result: map['result'],
           hidden: map['hidden'],
           skipped: map['skipped'],
+          retried: map['retried'] ?? false,
           time: map['time']);
     case 'done':
       return DoneEvent(success: map['success'], time: map['time']);

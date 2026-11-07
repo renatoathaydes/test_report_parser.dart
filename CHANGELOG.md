@@ -1,3 +1,10 @@
+## Unreleased
+
+## 1.3.0
+
+- Added `retried` to `TestDoneEvent` (protocol version `0.1.2`). It is `false` when the test runner does not send it.
+- Model generator treats attributes documented as "Added in protocol version" as optional.
+
 ## 1.2.2
 
 - Dependencies updates, minor fixes to new warnings. 
